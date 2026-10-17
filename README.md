@@ -5,7 +5,7 @@ Built with TypeScript, Express, Mongoose, and MongoDB Atlas. Deployed as a serve
 
 ## Live Deployment Links
 - **Live Backend API**: https://itelect4-backend-beryl.vercel.app
-- **Live Frontend App**: https://itelect4-project-beryl.vercel.app
+- **Live Frontend App**: https://itelect4-project-beta.vercel.app
 
 ## GT4 Part 2 Implementations
 - **Reference Resource**: Course Mongoose model (`src/models/Course.ts`) with idempotent seed script (`src/seed.ts`).
