@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
 /**
- * Connects to MongoDB using MONGODB_URI from the environment.
- * Resolves once the connection is established; rejects if the URI is
- * missing or the server cannot be reached within the timeout.
+ * Cached connection promise for Vercel's serverless environment.
+ * In serverless, each invocation may reuse the same process, so we
+ * cache the promise to avoid opening multiple connections.
  */
+let cached: Promise<typeof mongoose> | null = null;
+
 export async function connectDB(): Promise<typeof mongoose> {
+  if (cached) return cached;
+
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
@@ -14,7 +18,17 @@ export async function connectDB(): Promise<typeof mongoose> {
     );
   }
 
-  const conn = await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
-  console.log(`MongoDB connected: ${conn.connection.name}`);
-  return conn;
+  cached = mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+
+  cached
+    .then((conn) => {
+      console.log(`MongoDB connected: ${conn.connection.name}`);
+    })
+    .catch((err) => {
+      // Clear cache so the next invocation retries.
+      cached = null;
+      throw err;
+    });
+
+  return cached;
 }

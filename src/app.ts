@@ -2,13 +2,37 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import { connectDB } from "./config/db.js";
 import { authRouter } from "./routes/auth.js";
 import { submissionRouter } from "./routes/submissions.js";
+import { courseRouter } from "./routes/courses.js";
 
 export const app = express();
 
-app.use(cors());
+// --- Dynamic CORS ----------------------------------------------------------
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+  : [];
+
+app.use(
+  cors({
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+
+// --- Database middleware (serverless) --------------------------------------
+// Ensures the DB connection is established before any route handler runs.
+app.use(async (_req: Request, _res: Response, next: NextFunction) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // --- Health check ---------------------------------------------------------
 app.get("/api/health", (_req: Request, res: Response) => {
@@ -18,6 +42,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 // --- Routers -------------------------------------------------------------
 app.use("/api/auth", authRouter);
 app.use("/api/submissions", submissionRouter);
+app.use("/api/courses", courseRouter);
 
 // --- 404: no route matched ----------------------------------------------
 app.use((req: Request, res: Response) => {

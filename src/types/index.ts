@@ -44,6 +44,7 @@ export interface LogEntry {
 
 export interface Course {
   id: string;
+  code?: string;
   title: string;
   description: string;
   credits: number;
