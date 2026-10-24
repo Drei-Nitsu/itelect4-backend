@@ -6,6 +6,7 @@ import { connectDB } from "./config/db.js";
 import { authRouter } from "./routes/auth.js";
 import { submissionRouter } from "./routes/submissions.js";
 import { courseRouter } from "./routes/courses.js";
+import { aiRouter } from "./routes/ai.js";
 
 export const app = express();
 
@@ -43,6 +44,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 app.use("/api/auth", authRouter);
 app.use("/api/submissions", submissionRouter);
 app.use("/api/courses", courseRouter);
+app.use("/api/ai", aiRouter);
 
 // --- 404: no route matched ----------------------------------------------
 app.use((req: Request, res: Response) => {
