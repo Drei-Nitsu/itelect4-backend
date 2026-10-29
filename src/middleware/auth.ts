@@ -22,13 +22,19 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
   const header = req.headers.authorization;
 
   if (!header || !header.startsWith("Bearer ")) {
-    res.status(401).json({ error: "Missing or malformed Authorization header" });
+    res.status(401).json({
+      message: "No token. Send Authorization: Bearer <token>",
+      error: "Missing or malformed Authorization header",
+    });
     return;
   }
 
   const token = header.slice("Bearer ".length).trim();
   if (!token) {
-    res.status(401).json({ error: "Missing bearer token" });
+    res.status(401).json({
+      message: "No token. Send Authorization: Bearer <token>",
+      error: "Missing bearer token",
+    });
     return;
   }
 
@@ -44,6 +50,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
     req.userId = payload.userId;
     next();
   } catch {
-    res.status(401).json({ error: "Invalid or expired token" });
+    res.status(401).json({
+      message: "Token is invalid or has expired",
+      error: "Invalid or expired token",
+    });
   }
 }

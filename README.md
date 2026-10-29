@@ -1,3 +1,5 @@
+[![CI](https://github.com/Drei-Nitsu/itelect4-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Drei-Nitsu/itelect4-backend/actions/workflows/ci.yml)
+
 # itelect4-backend (GT4 Part 2)
 
 Backend API for IT Elective 4 (GT4 Part 2: Deploy both repos, then connect them).

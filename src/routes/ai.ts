@@ -17,6 +17,7 @@ const aiLimiter = rateLimit({
   message: { error: "Too many AI requests. Please wait a minute and try again." },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: false,
 });
 
 /* ------------------------------------------------------------------ *
@@ -26,8 +27,10 @@ aiRouter.post("/", requireAuth, aiLimiter, async (req: Request, res: Response) =
   // 1. Validate request body
   const parsed = AiRequestSchema.safeParse(req.body);
   if (!parsed.success) {
+    const errorMessages = parsed.error.issues.map((i) => i.message);
     res.status(400).json({
-      error: "Invalid request: " + parsed.error.issues.map((i) => i.message).join(", "),
+      errors: errorMessages,
+      error: "Invalid request: " + errorMessages.join(", "),
     });
     return;
   }
@@ -70,4 +73,3 @@ aiRouter.post("/", requireAuth, aiLimiter, async (req: Request, res: Response) =
 
   res.json(reply.data);
 });
-
