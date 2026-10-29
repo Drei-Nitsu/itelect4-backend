@@ -10,7 +10,7 @@ export const AiRequestSchema = z.object({
     .pipe(
       z
         .string()
-        .min(20, "Prompt must be at least 20 characters after trimming")
+        .min(20, "Describe your project in at least 20 characters.")
         .max(2000, "Prompt must be at most 2000 characters after trimming")
     ),
 });
@@ -40,4 +40,3 @@ export const AiReplySchema = z.object({
 });
 
 export type AiReply = z.infer<typeof AiReplySchema>;
-
